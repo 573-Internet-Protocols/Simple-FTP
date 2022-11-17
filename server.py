@@ -34,6 +34,7 @@ def server(port, file_name, p):
                     r = get_random()
                     if r > p:
                         content += d
+                        # print("received: ", next_expect_sequence_number, "send ack: ",next_expect_sequence_number+1)
                         next_expect_sequence_number += 1
                         ack_sequence_number = next_expect_sequence_number
                         ack_sequence_number = '{0:032b}'.format(ack_sequence_number).encode()

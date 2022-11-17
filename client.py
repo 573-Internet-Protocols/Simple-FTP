@@ -8,7 +8,7 @@ from checksum import checksum
 
 packet_indicator = '0101010101010101'
 last_indicator = '1111111111111111'
-time_out = 0.3
+time_out = 0.4
 
 
 def client(server_host_name, server_port, file_name, n, mss):
@@ -27,7 +27,7 @@ def client(server_host_name, server_port, file_name, n, mss):
     timers = deque()
 
     index = 0
-    cs.settimeout(0.01)
+    cs.settimeout(0.04)
     received_last_ack = False
 
     while not received_last_ack:
@@ -39,15 +39,15 @@ def client(server_host_name, server_port, file_name, n, mss):
 
         try:
             ack = cs.recvfrom(2048)
-            cs.settimeout(0.01)
+            cs.settimeout(0.04)
             if ack:
                 ack_sequence_number = ack[0][0:32]
                 ack_int = int(ack_sequence_number, 2)
-                if ack_int == window[0] + 1:
+                # print('Received ACK: ', ack_int, 'window[0]: ', window[0])
+                while len(window) > 0 and ack_int >= window[0] + 1:
                     window.popleft()
                     timers.popleft()
                     if ack_int == len(segment_list):
-                        print(ack_sequence_number)
                         received_last_ack = True
 
         except socket.timeout:
